@@ -182,12 +182,19 @@
   _.contains = function(collection, target) {
     // TIP: Many iteration problems can be most easily expressed in
     // terms of reduce(). Here's a freebie to demonstrate!
-    return _.reduce(collection, function(wasFound, item) {
-      if (wasFound) {
-        return true;
+    if (Array.isArray(collection)) {
+      return _.reduce(collection, function(wasFound, item) {
+        if (wasFound) {
+          return true;
+        }
+        return item === target;
+      }, false);
+    } else {
+      for (var key in collection) {
+        if (collection[key] === target) return true;
       }
-      return item === target;
-    }, false);
+      return false;
+    }
   };
 
 
@@ -291,6 +298,15 @@
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
+    var result,
+        args = {};
+
+    return function() {
+      if (args[arguments[0]] === undefined) {
+        args[arguments[0]] = func.apply(this, arguments);
+      }
+      return args[arguments[0]];
+    };
   };
 
   // Delays a function for the given number of milliseconds, and then calls
@@ -300,6 +316,7 @@
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
+    return setTimeout.apply(this, arguments);
   };
 
 
@@ -314,6 +331,16 @@
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
+    var arrayCopy = array.slice();
+    var results = [];
+    var randIndex;
+
+    while (arrayCopy.length > 0) {
+      randIndex = Math.floor(Math.random() * arrayCopy.length);
+      results = results.concat(arrayCopy.splice(randIndex, 1));
+    }
+
+    return results;
   };
 
 
