@@ -284,13 +284,17 @@
 
   // Calls the method named by functionOrKey on each value in the list.
   _.invoke = function(collection, functionOrKey, args) {
-    return _.map(collection, function(item) {
-      if (typeof functionOrKey === 'string') {
+    // if functionOrKey is given as a string (e.g. 'toUpperCase')
+    if (typeof functionOrKey === 'string') {
+      return _.map(collection, function(item) {
         return item[functionOrKey]();
-      } else {
+      });
+    // if functionOrKey is given as a function that has been defined in scope
+    } else {
+      return _.map(collection, function(item) {
         return functionOrKey.apply(item);
-      }
-    });
+      });
+    }
   };
 
   // Sorts the object's values by a criterion produced by an iterator.
